@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 
 #include <Gosu/Gosu.hpp>
 #include <Gosu/AutoLink.hpp>

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Vektor2d.h"
 #include "Gosu/Gosu.hpp"
 #include <cmath>
