@@ -25,8 +25,16 @@ void decrementx(int& x) {
 void incrementx(int& x) {
 	if (x < (850 - 2*bq)) { x = x + 5; }
 }
+bool keine_quader_kollision_links(
+	int q1x, int q1y, int q1breite, int q1hoehe,	//Quader 1 eckt nach links an
+	int q2x, int q2y, int q2breite, int q2hoehe)
+{
+	if (((q1y <= q2y) && (q2y < (q1y + q1hoehe))) || ((q2y < q1y) && (q1y < (q2y + q2hoehe))))
+	{
+		return q1x > q2x + q2breite;
+	}
+}
 //****************************************************************
-
 
 
 class GameWindow : public Gosu::Window
@@ -43,16 +51,19 @@ public:
 	// dann werden `draw` Aufrufe ausgelassen und die Framerate sinkt
 	void draw() override
 	{
-		graphics().draw_line(
-			100, 500, Gosu::Color::GREEN,
-			600, 500, Gosu::Color::GREEN,
-			0.0
-		);
 		graphics().draw_quad(
 			xq, yq, Gosu::Color::RED,
 			xq, yq+bq, Gosu::Color::RED,
 			xq+bq, yq, Gosu::Color::RED,
 			xq+bq, yq+bq, Gosu::Color::RED,
+			0.0
+		);
+		//Blauer langer Balken
+		graphics().draw_quad(
+			200, 150, Gosu::Color::BLUE,
+			200, 180, Gosu::Color::BLUE,
+			500, 150, Gosu::Color::BLUE,
+			500, 180, Gosu::Color::BLUE,
 			0.0
 		);
 	}
@@ -65,9 +76,9 @@ public:
 		left = input().down(Gosu::KB_LEFT);
 		right = input().down(Gosu::KB_RIGHT);
 		jump = input().down(Gosu::KB_SPACE);
-		if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }		//Ausgabe des Position des Quaders, wenn er bewegt wird
+		if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
 		if (up) { decrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
-		if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl;}
+		//if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl;}
 		if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl;
 		}
 /*		if (jump) {
@@ -75,6 +86,15 @@ public:
 				yq = yq - 2.5;
 			}
 		}*/
+
+		//Wenn das Viereck den Balken mit der linken Seite berührt, kann es nicht weiter nach links bewegt werden
+		if (keine_quader_kollision_links(
+			xq, yq, bq, bq,
+			200, 150, 300, 30)
+			)
+		{
+			if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+		}
 	}
 };
 
@@ -84,5 +104,3 @@ int main()
 	GameWindow window;
 	window.show();
 }
-
-
