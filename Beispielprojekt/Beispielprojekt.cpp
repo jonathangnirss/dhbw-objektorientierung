@@ -44,8 +44,8 @@ public:
 	void draw() override
 	{
 		graphics().draw_line(
-			10, 20, Gosu::Color::RED,
-			200, 100, Gosu::Color::GREEN,
+			100, 500, Gosu::Color::GREEN,
+			600, 500, Gosu::Color::GREEN,
 			0.0
 		);
 		graphics().draw_quad(
@@ -65,10 +65,11 @@ public:
 		left = input().down(Gosu::KB_LEFT);
 		right = input().down(Gosu::KB_RIGHT);
 		jump = input().down(Gosu::KB_SPACE);
-		if (down) { incrementy(yq); std::cout << yq << std::endl; }
-		if (up) { decrementy(yq); }
-		if (left) { decrementx(xq); std::cout << xq << std::endl;}
-		if (right) { incrementx(xq); }
+		if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }		//Ausgabe des Position des Quaders, wenn er bewegt wird
+		if (up) { decrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+		if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl;}
+		if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl;
+		}
 /*		if (jump) {
 			for (size_t i = 0; i < 20; i = i + 1) {
 				yq = yq - 2.5;
