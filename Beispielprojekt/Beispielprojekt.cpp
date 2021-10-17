@@ -3,6 +3,7 @@
 #include<iostream>
 #include <chrono>
 #include <thread>
+#include <vector>
 
 using std::this_thread::sleep_for;
 
@@ -11,9 +12,85 @@ using std::this_thread::sleep_for;
 	int xq = 0, yq = 0, bq = 50;  // Quader: xq,yq Koordinaten, bq Seitenlänge
 //***************************************************************
 
+//Klassen**********************************************************
+class Block				//Elternklasse für alle Objekte
+{
+private:
+	int x, y, breite, hoehe;
+	Gosu::Color color;
+public:
+	Block(int x, int y, int breite, int hoehe, Gosu::Color color) : x(x), y(y), breite(breite), hoehe(hoehe), color(color) {}
+	int get_x() { return this->x; }
+	int get_y() { return this->y; }
+	int get_hoehe() { return this->hoehe; }
+	int get_breite() { return this->breite; }
+
+	void decrementy(int& y) {
+		if (y > 0) { y = y - 5; }
+	}
+	void incrementy(int& y) {
+		if (y < 650 - 2 * bq) { y = y + 5; }
+	}
+	void decrementx(int& x) {
+		if (x > 0) { x = x - 5; }
+	}
+	void incrementx(int& x) {
+		if (x < (850 - 2 * bq)) { x = x + 5; }
+	}
+};
+class Hindernis : public Block
+{
+public:
+	Hindernis(int x, int y, int breite, int hoehe, Gosu::Color color) : Block(x, y, breite, hoehe, color) {}
+};
+class Spielfigur : public Block
+{
+private:
+
+public:
+	std::vector<Hindernis> hindernisliste;
+	Spielfigur(int x, int y, int breite, int hoehe, Gosu::Color color) : Block(x, y, breite, hoehe, color) {}
+	bool quader_kollision_links(Hindernis h)	//Spielfigur eckt nach links an
+	{
+		if (((this->get_y() <= h.get_y()) && (h.get_y() < (this->get_y() + this->get_hoehe()))) || ((h.get_y() < this->get_y() && (this->get_y() < (h.get_y() + h.get_hoehe())))))
+		{
+			return this->get_x() <= (h.get_x() + h.get_breite());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	void update()		//Wird dann 60 mal pro Sekunde aufgerufen
+	{
+		left = Gosu::Input::down(Gosu::KB_LEFT);		//Einlesen der Tasten
+		right = Gosu::Input::down(Gosu::KB_RIGHT);
+		up = Gosu::Input::down(Gosu::KB_UP);
+		down = Gosu::Input::down(Gosu::KB_DOWN);
+
+		Hindernis h(200, 150, 300, 30, Gosu::Color::BLUE);		//Erstellen des langen blauen Balkens
+		this->hindernisliste.push_back(h);
+
+		if (left)		//Wenn links gedrückt ist, prüfe für jedes Hindernis in der Hindernis-Liste, ob nach links eine Kollision stattfindet, wenn nein, verringere x.
+		{
+			for (Hindernis elem : hindernisliste)
+			{
+				if (quader_kollision_links(elem))
+				{
+					left = false;
+				}
+			}
+			if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+		}
+		if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+		if (up) { decrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+		if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+	}
+};
+//*****************************************************************
 
 //Functions*******************************************************
-void decrementy(int& y) {
+/*void decrementy(int& y) {
 	if (y > 0) { y = y - 5; }
 }
 void incrementy(int& y) {
@@ -24,17 +101,7 @@ void decrementx(int& x) {
 }
 void incrementx(int& x) {
 	if (x < (850 - 2*bq)) { x = x + 5; }
-}
-bool keine_quader_kollision_links(
-	int q1x, int q1y, int q1breite, int q1hoehe,	//Quader 1 eckt nach links an
-	int q2x, int q2y, int q2breite, int q2hoehe)
-{
-	if (((q1y <= q2y) && (q2y < (q1y + q1hoehe))) || ((q2y < q1y) && (q1y < (q2y + q2hoehe))))
-	{
-		return q1x > q2x + q2breite;
-	}
-}
-//****************************************************************
+}*/
 
 
 class GameWindow : public Gosu::Window
@@ -71,30 +138,23 @@ public:
 	// Wird 60x pro Sekunde aufgerufen
 	void update() override
 	{
-		down = input().down(Gosu::KB_DOWN);
+		/*down = input().down(Gosu::KB_DOWN);
 		up = input().down(Gosu::KB_UP);
 		left = input().down(Gosu::KB_LEFT);
 		right = input().down(Gosu::KB_RIGHT);
-		jump = input().down(Gosu::KB_SPACE);
-		if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
-		if (up) { decrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+		jump = input().down(Gosu::KB_SPACE);'/
+		//if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+		//if (up) { decrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
 		//if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl;}
-		if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl;
-		}
+		//if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
 /*		if (jump) {
 			for (size_t i = 0; i < 20; i = i + 1) {
 				yq = yq - 2.5;
 			}
 		}*/
 
-		//Wenn das Viereck den Balken mit der linken Seite berührt, kann es nicht weiter nach links bewegt werden
-		if (keine_quader_kollision_links(
-			xq, yq, bq, bq,
-			200, 150, 300, 30)
-			)
-		{
-			if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
-		}
+		Spielfigur sf(xq, yq, bq, bq, Gosu::Color::RED);		
+		sf.update();
 	}
 };
 
