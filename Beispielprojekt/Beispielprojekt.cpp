@@ -54,9 +54,40 @@ public:
 	{
 		if (((this->get_y() <= h.get_y()) && (h.get_y() < (this->get_y() + this->get_hoehe()))) || ((h.get_y() < this->get_y() && (this->get_y() < (h.get_y() + h.get_hoehe())))))
 		{
-			return this->get_x() <= (h.get_x() + h.get_breite());
+			return this->get_x() == (h.get_x() + h.get_breite());
 		}
 		else
+		{
+			return false;
+		}
+	}
+	bool quader_kollision_rechts(Hindernis h)	//Spielfigur eckt nach rechts an
+	{
+		if (((this->get_y() <= h.get_y()) && (h.get_y() < (this->get_y() + this->get_hoehe()))) || ((h.get_y() < this->get_y() && (this->get_y() < (h.get_y() + h.get_hoehe())))))
+		{
+			return (this->get_x() + this->get_breite()) == h.get_x();
+		}
+		else
+		{
+			return false;
+		}
+	}
+	bool quader_kollision_oben(Hindernis h)
+	{
+		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_y() + h.get_breite())))
+		{
+			return this->get_y() == (h.get_y() + h.get_hoehe());
+		}
+		{
+			return false;
+		}
+	}
+	bool quader_kollision_unten(Hindernis h)
+	{
+		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_y() + h.get_breite())))
+		{
+			return (this->get_y() + this->get_hoehe()) == h.get_y();
+		}
 		{
 			return false;
 		}
@@ -82,9 +113,39 @@ public:
 			}
 			if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
 		}
-		if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
-		if (up) { decrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
-		if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+		if (right)
+		{
+			for (Hindernis elem : hindernisliste)
+			{
+				if (quader_kollision_rechts(elem))
+				{
+					right = false;
+				}
+				if(right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+			}
+		}
+		if (up)
+		{
+			for (Hindernis elem : hindernisliste)
+			{
+				if (quader_kollision_oben(elem))
+				{
+					up = false;
+				}
+				if (up) { decrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+			}
+		}
+		if (down)
+		{
+			for (Hindernis elem : hindernisliste)
+			{
+				if (quader_kollision_unten(elem))
+				{
+					down = false;
+				}
+				if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+			}
+		}
 	}
 };
 //*****************************************************************
