@@ -9,8 +9,8 @@ using std::this_thread::sleep_for;
 
 //Variablen*******************************************************
 	bool left = 0, right = 0, up = 0, down = 0, jump = 0;
-	int xq = 0, yq = 0, bq = 50;  // Quader: xq,yq Koordinaten, bq Seitenlänge
-
+	int xq = 275, yq = 950 , bq = 50;		// Quader: xq,yq Koordinaten, bq Seitenlänge
+	int anz;
 //***************************************************************
 
 //Klassen**********************************************************
@@ -42,6 +42,13 @@ public:
 class Hindernis : public Block
 {
 public:
+	void erzeuge_Hindernis(){
+
+		Hindernis h();
+//Gosu::Graphics:: draw_quad();   // Werte!
+
+	}
+	void update(){}
 	Hindernis(int x, int y, int breite, int hoehe, Gosu::Color color) : Block(x, y, breite, hoehe, color) {}
 };
 class Spielfigur : public Block
@@ -192,19 +199,6 @@ public:
 //*****************************************************************
 
 //Functions*******************************************************
-/*void decrementy(int& y) {
-	if (y > 0) { y = y - 5; }
-}
-void incrementy(int& y) {
-	if (y < 650 - 2*bq) { y = y + 5; }
-}
-void decrementx(int& x) {
-	if (x > 0) { x = x - 5; }
-}
-void incrementx(int& x) {
-	if (x < (850 - 2*bq)) { x = x + 5; }
-}*/
-
 
 class GameWindow : public Gosu::Window
 {
@@ -235,28 +229,15 @@ public:
 			500, 180, Gosu::Color::BLUE,
 			0.0
 		);
+		
 	}
 
 	// Wird 60x pro Sekunde aufgerufen
 	void update() override
 	{
-		/*down = input().down(Gosu::KB_DOWN);
-		up = input().down(Gosu::KB_UP);
-		left = input().down(Gosu::KB_LEFT);
-		right = input().down(Gosu::KB_RIGHT);
-		jump = input().down(Gosu::KB_SPACE);'/
-		//if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
-		//if (up) { decrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
-		//if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl;}
-		//if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
-/*		if (jump) {
-			for (size_t i = 0; i < 20; i = i + 1) {
-				yq = yq - 2.5;
-			}
-		}*/
-
 		Spielfigur sf(xq, yq, bq, bq, Gosu::Color::RED);		
 		sf.update();
+
 	}
 };
 
