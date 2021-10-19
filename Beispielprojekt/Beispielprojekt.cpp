@@ -173,9 +173,19 @@ public:
 		
 		}
 
-		if (jump) 
+		if (jump)
 		{
-			yq = yq - 20;
+			for (Hindernis elem : hindernisliste)
+			{
+				if (quader_kollision_unten(elem))
+				{
+					yq = yq - 40;
+				}
+			}
+			if (this->get_y()+this->get_hoehe()>999)
+			{
+				yq = yq - 40;
+			}
 		}
 	}
 };
