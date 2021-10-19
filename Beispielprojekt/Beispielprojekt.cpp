@@ -10,6 +10,7 @@ using std::this_thread::sleep_for;
 //Variablen*******************************************************
 	bool left = 0, right = 0, up = 0, down = 0, jump = 0;
 	int xq = 0, yq = 0, bq = 50;  // Quader: xq,yq Koordinaten, bq Seitenlänge
+
 //***************************************************************
 
 //Klassen**********************************************************
@@ -29,13 +30,13 @@ public:
 		if (y > 0) { y = y - 5; }
 	}
 	void incrementy(int& y) {
-		if (y < 650 - 2 * bq) { y = y + 5; }
+		if (y < 1050 - 2 * bq) { y = y + 5; }
 	}
 	void decrementx(int& x) {
 		if (x > 0) { x = x - 5; }
 	}
 	void incrementx(int& x) {
-		if (x < (850 - 2 * bq)) { x = x + 5; }
+		if (x < (650 - 2 * bq)) { x = x + 5; }
 	}
 };
 class Hindernis : public Block
@@ -92,12 +93,29 @@ public:
 			return false;
 		}
 	}
+	bool fallen() {
+		unsigned hindernis_unten = 0;
+		for (Hindernis elem : hindernisliste)
+		{
+			if (quader_kollision_unten(elem))
+			{
+				hindernis_unten = hindernis_unten + 1;
+			}
+		}
+		if (hindernis_unten == 0) {
+			return true;
+		}
+		else { 
+			return false; 
+		}
+	}
 	void update()		//Wird dann 60 mal pro Sekunde aufgerufen
 	{
 		left = Gosu::Input::down(Gosu::KB_LEFT);		//Einlesen der Tasten
 		right = Gosu::Input::down(Gosu::KB_RIGHT);
 		up = Gosu::Input::down(Gosu::KB_UP);
 		down = Gosu::Input::down(Gosu::KB_DOWN);
+		jump = Gosu::Input::down(Gosu::KB_SPACE);
 
 		Hindernis h(200, 150, 300, 30, Gosu::Color::BLUE);		//Erstellen des langen blauen Balkens
 		this->hindernisliste.push_back(h);
@@ -111,7 +129,11 @@ public:
 					left = false;
 				}
 			}
-			if (left) { decrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+			if (left) 
+			{ 
+			decrementx(xq);
+			std::cout << "x: " << xq << " y: " << yq << std::endl; 
+			}
 		}
 		if (right)
 		{
@@ -146,6 +168,15 @@ public:
 				if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
 			}
 		}
+		if (fallen()) {
+			if (yq < 1050 - 2 * bq) { yq = yq + 1; }
+		
+		}
+
+		if (jump) 
+		{
+			yq = yq - 20;
+		}
 	}
 };
 //*****************************************************************
@@ -169,9 +200,9 @@ class GameWindow : public Gosu::Window
 {
 public:
 	GameWindow()
-		: Window(800, 600)
+		: Window(600, 1000)
 	{
-		set_caption("Gosu Tutorial mit Git");
+		set_caption("Hell Jumper");
 	}
 
 	// Wird bis zu 60x pro Sekunde aufgerufen.
