@@ -25,6 +25,7 @@ public:
 	int get_y() { return this->y; }
 	int get_hoehe() { return this->hoehe; }
 	int get_breite() { return this->breite; }
+	Gosu::Color get_color() { return this->color; }
 
 	void decrementy(int& y) {
 		if (y > 0) { y = y - 5; }
@@ -41,22 +42,17 @@ public:
 };
 class Hindernis : public Block
 {
-public:
-	void erzeuge_Hindernis(){
-
-		Hindernis h();
-//Gosu::Graphics:: draw_quad();   // Werte!
-
-	}
-	void update(){}
-	Hindernis(int x, int y, int breite, int hoehe, Gosu::Color color) : Block(x, y, breite, hoehe, color) {}
+private:
+	
+public:	
+	Hindernis(int x, int y, int breite, int hoehe, Gosu::Color color) : Block(x, y, breite, hoehe, color) {}	
 };
+std::vector<Hindernis> globale_hindernisliste;
 class Spielfigur : public Block
 {
 private:
-
-public:
 	std::vector<Hindernis> hindernisliste;
+public:
 	Spielfigur(int x, int y, int breite, int hoehe, Gosu::Color color) : Block(x, y, breite, hoehe, color) {}
 	bool quader_kollision_links(Hindernis h)	//Spielfigur eckt nach links an
 	{
@@ -101,12 +97,12 @@ public:
 		}
 	}
 	bool fallen() {
-		unsigned hindernis_unten = 0;
+		bool hindernis_unten = 0;
 		for (Hindernis elem : hindernisliste)
 		{
 			if (quader_kollision_unten(elem))
 			{
-				hindernis_unten = hindernis_unten + 1;
+				hindernis_unten = 1;
 			}
 		}
 		if (hindernis_unten == 0) {
@@ -116,6 +112,19 @@ public:
 			return false; 
 		}
 	}
+	void aktualisiere_hindernisliste() {
+
+		//erstelle Hindernisse (wie auch immer) und füge sie der Hindernisliste hinzu;
+		//eventuell auch in mehreren Funktionen?
+
+		//Gosu::Graphics:: draw_quad();   // Werte!
+
+		Hindernis h(200, 150, 300, 30, Gosu::Color::BLUE);		//Erstellen des langen blauen Balkens
+		this->hindernisliste.push_back(h);
+
+		globale_hindernisliste = hindernisliste;
+	}
+
 	void update()		//Wird dann 60 mal pro Sekunde aufgerufen
 	{
 		left = Gosu::Input::down(Gosu::KB_LEFT);		//Einlesen der Tasten
@@ -124,9 +133,7 @@ public:
 		down = Gosu::Input::down(Gosu::KB_DOWN);
 		jump = Gosu::Input::down(Gosu::KB_SPACE);
 
-		Hindernis h(200, 150, 300, 30, Gosu::Color::BLUE);		//Erstellen des langen blauen Balkens
-		this->hindernisliste.push_back(h);
-
+		aktualisiere_hindernisliste();		//??
 		if (left)		//Wenn links gedrückt ist, prüfe für jedes Hindernis in der Hindernis-Liste, ob nach links eine Kollision stattfindet, wenn nein, verringere x.
 		{
 			for (Hindernis elem : hindernisliste)
@@ -179,7 +186,6 @@ public:
 			if (yq < 1050 - 2 * bq) { yq = yq + 1; }
 		
 		}
-
 		if (jump)
 		{
 			for (Hindernis elem : hindernisliste)
@@ -221,14 +227,18 @@ public:
 			xq+bq, yq+bq, Gosu::Color::RED,
 			0.0
 		);
-		//Blauer langer Balken
-		graphics().draw_quad(
-			200, 150, Gosu::Color::BLUE,
-			200, 180, Gosu::Color::BLUE,
-			500, 150, Gosu::Color::BLUE,
-			500, 180, Gosu::Color::BLUE,
-			0.0
-		);
+
+		//Zeichne Hindernisliste
+		for (Hindernis elem : globale_hindernisliste)
+		{
+			graphics().draw_quad(
+				elem.get_x(), elem.get_y(), elem.get_color(),
+				elem.get_x(), elem.get_y() + elem.get_hoehe(), elem.get_color(),
+				elem.get_x() + elem.get_breite(), elem.get_y(), elem.get_color(),
+				elem.get_x() + elem.get_breite(), elem.get_y() + elem.get_hoehe(), elem.get_color(),
+				0.0
+			);
+		}
 		
 	}
 
