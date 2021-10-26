@@ -6,11 +6,16 @@
 #include <vector>
 
 using std::this_thread::sleep_for;
-
+	int zufallszahl(int min, int max) {
+		return (rand() % (max - min) + min);
+	}
 //Variablen*******************************************************
 	bool left = 0, right = 0, up = 0, down = 0, jump = 0;
-	int xq = 275, yq = 950 , bq = 50;		// Quader: xq,yq Koordinaten, bq Seitenlänge
-	int anz;
+	std::vector<std::vector<int>> hindernismatrix(4, std::vector<int>(20));
+
+	int xq = 275, yq = 50, bq = 50;  // Abmessungen Spielfigur
+	int anz, zfz, score=0;
+	int counter = 0;
 //***************************************************************
 
 //Klassen**********************************************************
@@ -25,8 +30,10 @@ public:
 	int get_y() { return this->y; }
 	int get_hoehe() { return this->hoehe; }
 	int get_breite() { return this->breite; }
+	
 	Gosu::Color get_color() { return this->color; }
 
+	void aendere_y(int a) { this->y = this->y + a; }
 	void decrementy(int& y) {
 		if (y > 0) { y = y - 5; }
 	}
@@ -34,10 +41,10 @@ public:
 		if (y < 1050 - 2 * bq) { y = y + 5; }
 	}
 	void decrementx(int& x) {
-		if (x > 0) { x = x - 5; }
+		if (x > 0) { x = x - 2; }
 	}
 	void incrementx(int& x) {
-		if (x < (650 - 2 * bq)) { x = x + 5; }
+		if (x < (650 - 2 * bq)) { x = x + 1; }
 	}
 };
 class Hindernis : public Block
@@ -48,6 +55,8 @@ public:
 	Hindernis(int x, int y, int breite, int hoehe, Gosu::Color color) : Block(x, y, breite, hoehe, color) {}	
 };
 std::vector<Hindernis> globale_hindernisliste;
+
+
 class Spielfigur : public Block
 {
 private:
@@ -78,7 +87,7 @@ public:
 	}
 	bool quader_kollision_oben(Hindernis h)
 	{
-		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_y() + h.get_breite())))
+		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_x() + h.get_breite())))
 		{
 			return this->get_y() == (h.get_y() + h.get_hoehe());
 		}
@@ -88,7 +97,7 @@ public:
 	}
 	bool quader_kollision_unten(Hindernis h)
 	{
-		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_y() + h.get_breite())))
+		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_x() + h.get_breite())))
 		{
 			return (this->get_y() + this->get_hoehe()) == h.get_y();
 		}
@@ -112,15 +121,17 @@ public:
 			return false; 
 		}
 	}
+
+
 	void aktualisiere_hindernisliste() {
 
-		//erstelle Hindernisse (wie auch immer) und füge sie der Hindernisliste hinzu;
-		//eventuell auch in mehreren Funktionen?
+	/*	Hindernis h(xh, yh, bh, hh, Gosu::Color::BLUE);		//Erstellen des langen blauen Balkens
+		this->hindernisliste.push_back(h); */
 
-		//Gosu::Graphics:: draw_quad();   // Werte!
-
-		Hindernis h(200, 150, 300, 30, Gosu::Color::BLUE);		//Erstellen des langen blauen Balkens
-		this->hindernisliste.push_back(h);
+		// Koordinaten für Hindernisse aus Hindernissmatrix in Hindernisliste schreiben
+		for (size_t s = 0; s < (hindernismatrix.at(0)).size(); s = s + 1) {
+			this->hindernisliste.push_back(Hindernis(hindernismatrix.at(0).at(s), hindernismatrix.at(1).at(s), hindernismatrix.at(2).at(s), hindernismatrix.at(3).at(s), Gosu::Color::BLUE));
+		}
 
 		globale_hindernisliste = hindernisliste;
 	}
@@ -133,7 +144,7 @@ public:
 		down = Gosu::Input::down(Gosu::KB_DOWN);
 		jump = Gosu::Input::down(Gosu::KB_SPACE);
 
-		aktualisiere_hindernisliste();		//??
+		aktualisiere_hindernisliste();		
 		if (left)		//Wenn links gedrückt ist, prüfe für jedes Hindernis in der Hindernis-Liste, ob nach links eine Kollision stattfindet, wenn nein, verringere x.
 		{
 			for (Hindernis elem : hindernisliste)
@@ -192,12 +203,12 @@ public:
 			{
 				if (quader_kollision_unten(elem))
 				{
-					yq = yq - 40;
+					yq = yq - 150;
 				}
 			}
 			if (this->get_y()+this->get_hoehe()>999)
 			{
-				yq = yq - 40;
+				yq = yq - 150;
 			}
 		}
 	}
@@ -239,21 +250,78 @@ public:
 				0.0
 			);
 		}
-		
+
+/*		for (size_t s = 0; s < (hindernismatrix.at(0)).size(); s = s + 1) {
+			graphics().draw_quad(
+				hindernismatrix.at(0).at(s), hindernismatrix.at(1).at(s), Gosu::Color::BLUE,
+				hindernismatrix.at(0).at(s), hindernismatrix.at(1).at(s) + hindernismatrix.at(3).at(s), Gosu::Color::BLUE,
+				hindernismatrix.at(0).at(s) + hindernismatrix.at(2).at(s), hindernismatrix.at(1).at(s), Gosu::Color::BLUE,
+				hindernismatrix.at(0).at(s) + hindernismatrix.at(2).at(s), hindernismatrix.at(1).at(s) + hindernismatrix.at(3).at(s), Gosu::Color::BLUE,
+				0.0
+			); 
+		}*/ // Zum Testen direkt aus Matrix zeichnen
+
+
+
 	}
 
 	// Wird 60x pro Sekunde aufgerufen
 	void update() override
-	{
+	{	
+
+
+		
 		Spielfigur sf(xq, yq, bq, bq, Gosu::Color::RED);		
 		sf.update();
+
+		//Bewegung der Hindernisse*************************************************
+		if (counter % 2 == 0) {
+			for (size_t s = 0; s < (hindernismatrix.at(0)).size(); s = s + 1) {
+				hindernismatrix.at(1).at(s) = hindernismatrix.at(1).at(s) + 1;
+			} 
+		}
+		for (size_t s = 0; s < (hindernismatrix.at(0)).size(); s = s + 1) { // Zurücksetzen der Hindenisse
+			if (hindernismatrix.at(1).at(s) > 1000) {
+				hindernismatrix.at(1).at(s) = 0 - zufallszahl(0,30); // Hindernissabstand verändern
+				hindernismatrix.at(0).at(s) = zufallszahl(0, 575);
+			}
+		}
+		//*********************************************************************
+		counter = counter + 1;
+		// Couter zurücksetzen und Score hochzählen
+		if (counter > 600) { 
+			counter = 0;
+			score = score + 1;
+		}
+		//std::cout<< zufallszahl(0,250) << std::endl;
+		if (yq > 949) {   // Hier Abbruch einfügen, wenn Spielfigur auf dem Boden angekommen ist.
+			std::cout << "Game end. Score:" << score << std::endl;
+			exit(1);  
+		}
 
 	}
 };
 
 // C++ Hauptprogramm
 int main()
-{
+{	// Hindernissmatrix erzeugen
+	for (size_t z = 0; z < hindernismatrix.size(); z = z + 1) {
+		for (size_t s = 0; s < (hindernismatrix.at(0)).size(); s = s + 1) {
+			if (z == 0){
+				hindernismatrix.at(z).at(s) = zufallszahl(0, 550);    // x-Koordinate
+			}
+				if (z == 1) {
+					hindernismatrix.at(z).at(s) = 50*s+zufallszahl(25, 75);  //y-Koordinate
+				}
+			if (z == 2) {
+				hindernismatrix.at(z).at(s) = zufallszahl(50, 300);  // Breite
+			}
+			if (z == 3) {
+				hindernismatrix.at(z).at(s) = 10;  // Höhe
+			}
+		}
+	}
 	GameWindow window;
 	window.show();
+
 }
