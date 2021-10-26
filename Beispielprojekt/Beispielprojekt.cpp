@@ -133,6 +133,9 @@ public:
 			this->hindernisliste.push_back(Hindernis(hindernismatrix.at(0).at(s), hindernismatrix.at(1).at(s), hindernismatrix.at(2).at(s), hindernismatrix.at(3).at(s), Gosu::Color::BLUE));
 		}
 
+		Hindernis h1(70, 250, 50, 30, Gosu::Color::BLUE);
+		this->hindernisliste.push_back(h1);
+
 		globale_hindernisliste = hindernisliste;
 	}
 

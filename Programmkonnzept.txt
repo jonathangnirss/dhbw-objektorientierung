@@ -1,57 +1,10 @@
-
-Hinderniss
-
-kollision
-  
+To-Do:
 
 
-spielfigur : image???
-
-update {
-
-links = input().down(Gosu::KB_LEFT);
-wenn links {
-  für jedes hinderniss
-    wenn hinderniss.kollision (koordnaten-spielfigur-links) links=false
-  }
-  wenn links {gehe links}
-}
-wenn rechts     
-..
-..
-..
+Rechter Rand vom Hinderniss deebuggen
+Kontinuierliche Bewegung der Hindernisse nach unten
+Automatische, zufällige Erzeugung der Hindernisse
 
 
 
-
-
-
-
-GameWindow
-
-public hindernisliste array of hindernisse
-
-draw {
-	spielfigur.draw
-
-	für jedes hinderniss in der hindernissliste
-		hinderniss.draw
-}
-
-
-update {
-
-	spielfigur.update ( )
-
-}
-
-
-
-switch gamewindow.input.key {
-
-case down: inc()
-case up: dec()
-case left: dec()
-case right: inc()
-
-}
+Sprung anständig modellieren
