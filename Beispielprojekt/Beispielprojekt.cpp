@@ -78,7 +78,7 @@ public:
 	}
 	bool quader_kollision_oben(Hindernis h)
 	{
-		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_y() + h.get_breite())))
+		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_x() + h.get_breite())))
 		{
 			return this->get_y() == (h.get_y() + h.get_hoehe());
 		}
@@ -88,7 +88,7 @@ public:
 	}
 	bool quader_kollision_unten(Hindernis h)
 	{
-		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_y() + h.get_breite())))
+		if (((this->get_x() <= h.get_x()) && (h.get_x() < (this->get_x() + this->get_breite()))) || ((h.get_x() < this->get_x() && this->get_x() < h.get_x() + h.get_breite())))
 		{
 			return (this->get_y() + this->get_hoehe()) == h.get_y();
 		}
@@ -121,6 +121,9 @@ public:
 
 		Hindernis h(200, 150, 300, 30, Gosu::Color::BLUE);		//Erstellen des langen blauen Balkens
 		this->hindernisliste.push_back(h);
+
+		Hindernis h1(70, 250, 50, 30, Gosu::Color::BLUE);
+		this->hindernisliste.push_back(h1);
 
 		globale_hindernisliste = hindernisliste;
 	}
