@@ -44,7 +44,7 @@ public:
 		if (x > 0) { x = x - 2; }
 	}
 	void incrementx(int& x) {
-		if (x < (650 - 2 * bq)) { x = x + 1; }
+		if (x < (650 - 2 * bq)) { x = x + 2; }
 	}
 };
 class Hindernis : public Block
@@ -168,9 +168,9 @@ public:
 				if (quader_kollision_rechts(elem))
 				{
 					right = false;
-				}
-				if(right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+				}				
 			}
+			if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
 		}
 		/*if (up)
 		{
