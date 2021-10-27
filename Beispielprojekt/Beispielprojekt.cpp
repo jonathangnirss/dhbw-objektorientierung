@@ -133,8 +133,6 @@ public:
 			this->hindernisliste.push_back(Hindernis(hindernismatrix.at(0).at(s), hindernismatrix.at(1).at(s), hindernismatrix.at(2).at(s), hindernismatrix.at(3).at(s), Gosu::Color::BLUE));
 		}
 
-		Hindernis h1(70, 250, 50, 30, Gosu::Color::BLUE);
-		this->hindernisliste.push_back(h1);
 
 		globale_hindernisliste = hindernisliste;
 	}
@@ -174,7 +172,7 @@ public:
 				if(right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
 			}
 		}
-		if (up)
+		/*if (up)
 		{
 			for (Hindernis elem : hindernisliste)
 			{
@@ -195,7 +193,7 @@ public:
 				}
 				if (down) { incrementy(yq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
 			}
-		}
+		}*/
 		if (fallen()) {
 			if (yq < 1050 - 2 * bq) { yq = yq + 1; }
 		
@@ -292,7 +290,7 @@ public:
 		//*********************************************************************
 		counter = counter + 1;
 		// Couter zurücksetzen und Score hochzählen
-		if (counter > 600) { 
+		if (counter > 200) { 
 			counter = 0;
 			score = score + 1;
 		}
