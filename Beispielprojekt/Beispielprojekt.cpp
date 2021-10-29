@@ -13,7 +13,7 @@ using std::this_thread::sleep_for;
 	bool left = 0, right = 0, up = 0, down = 0, jump = 0;
 	std::vector<std::vector<int>> hindernismatrix(4, std::vector<int>(20));
 
-	int xq = 275, yq = 50, bq = 50;  // Abmessungen Spielfigur
+	int xq = 275, yq = 50, bq = 45;  // Abmessungen Spielfigur
 	int anz, zfz, score=0;
 	int counter = 0;
 //***************************************************************
@@ -38,7 +38,7 @@ public:
 		if (y > 0) { y = y - 5; }
 	}
 	void incrementy(int& y) {
-		if (y < 1050 - 2 * bq) { y = y + 5; }
+		if (y < 1050 - 2 * bq) { y = y + 2; }
 	}
 	void decrementx(int& x) {
 		if (x > 0) { x = x - 2; }
@@ -221,8 +221,10 @@ public:
 class GameWindow : public Gosu::Window
 {
 public:
+	Gosu::Image bild;
 	GameWindow()
 		: Window(600, 1000)
+		, bild("pikachu.png")
 	{
 		set_caption("Hell Jumper");
 	}
@@ -239,6 +241,8 @@ public:
 			xq+bq, yq+bq, Gosu::Color::RED,
 			0.0
 		);
+
+		bild.draw_rot(xq, yq, 0.0, 0.0, 0.1, 0.18, 0.058, 0.058);
 
 		//Zeichne Hindernisliste
 		for (Hindernis elem : globale_hindernisliste)
