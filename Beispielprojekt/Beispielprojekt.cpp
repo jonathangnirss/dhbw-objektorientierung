@@ -13,7 +13,7 @@ using std::this_thread::sleep_for;
 	bool left = 0, right = 0, up = 0, down = 0, jump = 0;
 	std::vector<std::vector<int>> hindernismatrix(4, std::vector<int>(20));
 
-	int xq = 275, yq = 50, bq = 45;  // Abmessungen Spielfigur
+	int xq = 275, yq = 40, bq = 45;  // Abmessungen Spielfigur
 	int anz, zfz, score=0;
 	int counter = 0;
 //***************************************************************
@@ -158,7 +158,7 @@ public:
 			if (left) 
 			{ 
 			decrementx(xq);
-			std::cout << "x: " << xq << " y: " << yq << std::endl; 
+			//std::cout << "x: " << xq << " y: " << yq << std::endl; 
 			}
 		}
 		if (right)
@@ -170,7 +170,9 @@ public:
 					right = false;
 				}				
 			}
-			if (right) { incrementx(xq); std::cout << "x: " << xq << " y: " << yq << std::endl; }
+			if (right) { incrementx(xq); 
+			//std::cout << "x: " << xq << " y: " << yq << std::endl; 
+			}
 		}
 		/*if (up)
 		{
@@ -234,15 +236,15 @@ public:
 	// dann werden `draw` Aufrufe ausgelassen und die Framerate sinkt
 	void draw() override
 	{
-		graphics().draw_quad(
+		/*graphics().draw_quad(
 			xq, yq, Gosu::Color::RED,
 			xq, yq+bq, Gosu::Color::RED,
 			xq+bq, yq, Gosu::Color::RED,
 			xq+bq, yq+bq, Gosu::Color::RED,
 			0.0
-		);
+		);*/
 
-		bild.draw_rot(xq, yq, 0.0, 0.0, 0.1, 0.18, 0.058, 0.058);
+		bild.draw_rot(xq, yq, 0.0, 0.0, 0.1, 0.18, 0.048, 0.048);
 
 		//Zeichne Hindernisliste
 		for (Hindernis elem : globale_hindernisliste)
@@ -300,8 +302,8 @@ public:
 		}
 		//std::cout<< zufallszahl(0,250) << std::endl;
 		if (yq > 949) {   // Hier Abbruch einfügen, wenn Spielfigur auf dem Boden angekommen ist.
-			std::cout << "Game end. Score:" << score << std::endl;
-			exit(1);  
+			std::cout << "Game end. Score: " << score << std::endl;
+			exit(1);
 		}
 
 	}
